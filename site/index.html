@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Psito Solitaire</title>
+<meta name="description" content="Classic solitaire with cockatiels. No ads, no telemetry, no account.">
+<link rel="icon" href="icon.png" type="image/png">
+<style>
+  :root {
+    --bg: #14202a;
+    --surface: #1d2f3b;
+    --line: #314a5a;
+    --text: #f3efe0;
+    --muted: #adc0cc;
+    --accent: #ffc107;
+    --on-accent: #2b2000;
+    --code: #0d1820;
+    color-scheme: dark;
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg: #f7f1df;
+      --surface: #ffffff;
+      --line: #e1d8bf;
+      --text: #2a2a22;
+      --muted: #5f6253;
+      --accent: #2a6079;
+      --on-accent: #ffffff;
+      --code: #1e3240;
+      color-scheme: light;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  a { color: var(--accent); }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 0 16px; }
+  header.bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 0; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 600; }
+  .brand img { width: 28px; height: 28px; }
+  .lang {
+    font: inherit; font-size: 14px; color: var(--text); background: var(--surface);
+    border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; min-height: 36px; cursor: pointer;
+  }
+  h3 { font-size: 17px; margin: 24px 0 4px; }
+  details { margin: 8px 0 0; }
+  summary { cursor: pointer; color: var(--muted); font-size: 14px; min-height: 28px; }
+  .hero { padding: 40px 0 32px; }
+  .hero img { width: 96px; height: 96px; display: block; margin-bottom: 20px; }
+  h1 { font-size: clamp(32px, 7vw, 52px); line-height: 1.1; margin: 0 0 12px; letter-spacing: -0.02em; }
+  .lead { font-size: 19px; color: var(--muted); max-width: 42em; margin: 0 0 24px; }
+  .cta { display: flex; flex-wrap: wrap; gap: 10px; }
+  .btn {
+    display: inline-flex; align-items: center; min-height: 44px; padding: 8px 18px; border-radius: 999px;
+    border: 1px solid var(--line); color: var(--text); text-decoration: none; font-weight: 500;
+  }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 600; }
+  section { padding: 28px 0; border-top: 1px solid var(--line); }
+  h2 { font-size: 24px; margin: 0 0 14px; letter-spacing: -0.01em; }
+  .shots { display: grid; gap: 12px; grid-template-columns: 1fr; }
+  .shots img { width: 100%; height: auto; display: block; border-radius: 10px; border: 1px solid var(--line); }
+  .note { color: var(--muted); font-size: 14px; }
+  .code { position: relative; margin: 12px 0; }
+  pre {
+    margin: 0; padding: 14px 16px; padding-top: 44px; overflow-x: auto; border-radius: 10px;
+    background: var(--code); color: #f3efe0; font: 13.5px/1.6 ui-monospace, "DejaVu Sans Mono", monospace;
+  }
+  .copy {
+    position: absolute; top: 8px; right: 8px; font: inherit; font-size: 13px; color: #f3efe0;
+    background: #314a5a; border: 0; border-radius: 6px; padding: 4px 12px; min-height: 28px; cursor: pointer;
+  }
+  ul.list { margin: 0; padding-left: 20px; }
+  ul.list li { margin: 4px 0; }
+  .links { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+  .links a {
+    display: block; padding: 12px 14px; background: var(--surface); border: 1px solid var(--line);
+    border-radius: 10px; text-decoration: none; color: var(--text);
+  }
+  .links small { display: block; color: var(--muted); }
+  footer { border-top: 1px solid var(--line); padding: 24px 0 40px; color: var(--muted); font-size: 14px; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="bar">
+    <div class="brand"><img src="icon.png" alt=""> Psito Solitaire</div>
+    <select class="lang" id="lang" aria-label="Language">
+      <option value="en">English</option>
+      <option value="pt" lang="pt">Português</option>
+    </select>
+  </header>
+
+  <main>
+    <div class="hero">
+      <img src="icon.png" alt="">
+      <h1 data-t="heroTitle">The classic solitaire, with cockatiels.</h1>
+      <p class="lead" data-t="heroLead">Classic solitaire for Windows and Linux, with illustrated cockatiels on the cards. No ads, no telemetry and no account: just a little game and some happiness.</p>
+      <div class="cta">
+        <a class="btn primary" href="#install" data-t="install">Install</a>
+        <a class="btn" href="https://github.com/francisceioseph/psito-solitaire" data-t="sourceCode">Source code</a>
+      </div>
+    </div>
+
+    <section aria-labelledby="see">
+      <h2 id="see" data-t="lookInside">A look inside</h2>
+      <div class="shots">
+        <img src="screens/table.jpg" width="1200" height="738" loading="lazy" data-t-alt="shotTable" alt="The table, with the stock, the nests and seven columns of cards">
+        <img src="screens/figures.jpg" width="1200" height="1266" loading="lazy" data-t-alt="shotFigures" alt="The twelve face cards: kings, queens and jacks as cockatiels of different colors">
+      </div>
+      <p class="note" data-t="shotNote">The game follows your system's language, in English or Portuguese.</p>
+    </section>
+
+    <section aria-labelledby="features">
+      <h2 id="features" data-t="whatItDoes">What it does</h2>
+      <ul class="list">
+        <li data-t="feature1">Classic rules, with seven columns, a stock and four nests</li>
+        <li data-t="feature2">The classic scoring, and a table of your best games</li>
+        <li data-t="feature3">Numbered games: the same number always gives the same deal</li>
+        <li data-t="feature4">Cards that flip, hop, shake their heads at a wrong move and bounce when you win</li>
+        <li data-t="feature5">A curious cockatiel that peeks at the table when you stop to think</li>
+        <li data-t="feature6">Works offline. It sends nothing anywhere</li>
+      </ul>
+    </section>
+
+    <section id="install" aria-labelledby="install-title">
+      <h2 id="install-title" data-t="install">Install</h2>
+
+      <h3>Windows</h3>
+      <p data-t="windowsIntro">On Windows 10 (1809 or newer) or Windows 11, on x64. It doesn't ask for administrator rights.</p>
+      <p><a class="btn primary" href="https://github.com/francisceioseph/psito-solitaire/releases/latest/download/psito-solitaire-windows-x64-setup.exe" data-t="windowsDownload">Download the installer</a></p>
+      <p class="note" data-t="windowsNote">SmartScreen may warn about an unknown publisher, because the installer isn't signed with a paid certificate. Choose More info, then Run anyway.</p>
+
+      <h3>Debian, Ubuntu, Mint</h3>
+      <p data-t="debIntro">On Debian 13, Ubuntu 24.04, Mint 22 or newer, on amd64. It updates along with the system.</p>
+      <div class="code">
+        <button type="button" class="copy" data-copy="deb-cmd" data-t="copy">Copy</button>
+        <pre id="deb-cmd" tabindex="0">sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://francisceioseph.github.io/psito-solitaire/psito-solitaire.asc | sudo tee /etc/apt/keyrings/psito-solitaire.asc &gt;/dev/null
+printf 'Types: deb\nURIs: https://francisceioseph.github.io/psito-solitaire\nSuites: stable\nComponents: main\nArchitectures: amd64\nSigned-By: /etc/apt/keyrings/psito-solitaire.asc\n' | sudo tee /etc/apt/sources.list.d/psito-solitaire.sources &gt;/dev/null
+sudo apt update
+sudo apt install psito-solitaire</pre>
+      </div>
+      <details>
+        <summary data-t="removeIntro">To remove it, and the repository</summary>
+        <div class="code">
+          <button type="button" class="copy" data-copy="deb-remove" data-t="copy">Copy</button>
+          <pre id="deb-remove" tabindex="0">sudo apt remove psito-solitaire
+sudo rm /etc/apt/sources.list.d/psito-solitaire.sources /etc/apt/keyrings/psito-solitaire.asc</pre>
+        </div>
+      </details>
+
+      <h3>Fedora</h3>
+      <p data-t="fedoraIntro">On x86_64. It updates along with the system. The first install asks you to accept the signing key.</p>
+      <div class="code">
+        <button type="button" class="copy" data-copy="rpm-cmd" data-t="copy">Copy</button>
+        <pre id="rpm-cmd" tabindex="0">sudo curl -fsSL -o /etc/yum.repos.d/psito-solitaire.repo https://francisceioseph.github.io/psito-solitaire/psito-solitaire.repo
+sudo dnf install psito-solitaire</pre>
+      </div>
+      <details>
+        <summary data-t="removeIntro">To remove it, and the repository</summary>
+        <div class="code">
+          <button type="button" class="copy" data-copy="rpm-remove" data-t="copy">Copy</button>
+          <pre id="rpm-remove" tabindex="0">sudo dnf remove psito-solitaire
+sudo rm /etc/yum.repos.d/psito-solitaire.repo</pre>
+        </div>
+      </details>
+
+      <p class="note" data-t="otherNote">Another system? You can <a href="https://github.com/francisceioseph/psito-solitaire/releases/latest">download the package</a> or <a href="https://github.com/francisceioseph/psito-solitaire#install">build from source</a>.</p>
+    </section>
+
+    <section aria-labelledby="links-title">
+      <h2 id="links-title" data-t="links">Links</h2>
+      <div class="links">
+        <a href="https://github.com/francisceioseph/psito-solitaire/issues"><span data-t="issues">Issues</span><small data-t="issuesNote">Report a problem</small></a>
+        <a href="https://github.com/francisceioseph/psito-solitaire/releases"><span data-t="releases">Releases</span><small data-t="releasesNote">What changed in each version</small></a>
+        <a href="https://github.com/francisceioseph/psito-solitaire">GitHub<small data-t="githubNote">The source code</small></a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p data-t="footer">Code under the Apache 2.0 license, card art under CC0. Developed with the help of Claude Code. Cards illustrated with Google Gemini.</p>
+  </footer>
+</div>
+<script src="i18n.js"></script>
+</body>
+</html>

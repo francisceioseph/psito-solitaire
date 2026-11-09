@@ -1,0 +1,124 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.47.4
+          channel: stable
+          cache: true
+      - name: System libraries
+        run: sudo apt-get update && sudo apt-get install -y libgtk-3-dev ninja-build cmake clang pkg-config
+      - name: Dependencies
+        run: flutter pub get
+      - name: Analyze
+        run: flutter analyze
+      - name: The generated translations match the ARB files
+        run: git diff --exit-code -- 'lib/l10n/*.dart'
+      - name: Test
+        run: flutter test
+      - name: Build
+        run: flutter build linux --release
+
+  # Não segura a versão do Linux. O app compilado e o instalador ficam nos
+  # artefatos do run.
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.47.4
+          channel: stable
+          cache: true
+      - name: Dependencies
+        run: flutter pub get
+      - name: Test
+        run: flutter test --concurrency=2
+      - name: Build
+        run: flutter build windows --release
+      - name: Build the installer
+        run: |
+          choco install innosetup --no-progress -y
+          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" windows\installer\psito-solitaire.iss
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - uses: actions/upload-artifact@v4
+        with:
+          name: psito-solitaire-windows-setup
+          path: windows/installer/Output/*.exe
+
+  # Também não segura a versão: ainda não há instalador para o macOS.
+  macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.47.4
+          channel: stable
+          cache: true
+      - name: Build
+        run: |
+          flutter pub get
+          flutter build macos --release
+
+  # A versão é a última tag: feat sobe o minor, fix o patch e BREAKING CHANGE o major.
+  release:
+    needs: check
+    if: github.event_name == 'push'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    outputs:
+      tag: ${{ steps.new_tag.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Tag and publish the release
+        run: >-
+          npx --yes
+          -p semantic-release@24.2.9
+          -p @semantic-release/exec@7.1.0
+          -p @semantic-release/git@11.0.1
+          semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: The tag, if this run made one
+        id: new_tag
+        run: |
+          tag="$(git tag --points-at HEAD 'v*' | head -1)"
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+
+  apt:
+    needs: release
+    if: needs.release.outputs.tag != ''
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+    uses: ./.github/workflows/apt.yml
+    with:
+      tag: ${{ needs.release.outputs.tag }}
+    secrets: inherit
+
+  windows-installer:
+    needs: release
+    if: needs.release.outputs.tag != ''
+    permissions:
+      contents: write
+    uses: ./.github/workflows/windows.yml
+    with:
+      tag: ${{ needs.release.outputs.tag }}
+    secrets: inherit

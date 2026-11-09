@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Application
+Name=Psito Solitaire
+GenericName=Solitaire
+GenericName[pt]=Paciência
+Comment=Classic solitaire with cockatiels
+Comment[pt]=Paciência clássica com calopsitas
+Exec=psito_solitaire
+Icon=org.psito.solitaire
+Terminal=false
+Categories=Game;CardGame;
+Keywords=solitaire;klondike;cards;cockatiel;paciência;cartas;calopsita;
+StartupWMClass=org.psito.solitaire
