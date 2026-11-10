@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,6 +8,7 @@ import '../game/game_controller.dart';
 import 'app_bar.dart';
 import 'board.dart';
 import 'card_face.dart';
+import 'peek.dart';
 
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key, this.number});
@@ -24,6 +26,8 @@ class _GameScreenState extends State<GameScreen> {
 
   late final GameController _game = GameController(number: widget.number);
   Timer? _timer;
+  final _random = Random();
+  PeekSpot? _spot;
   bool _peeking = false;
   bool _precached = false;
 
@@ -59,7 +63,10 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   void _peek() {
-    setState(() => _peeking = true);
+    setState(() {
+      _spot = nextPeekSpot(_random, _spot);
+      _peeking = true;
+    });
     _timer = Timer(_peekTime, () {
       setState(() => _peeking = false);
       _waitIdle();
@@ -113,7 +120,12 @@ class _GameScreenState extends State<GameScreen> {
                         ),
                       ),
                       Board(game: _game),
-                      _Peek(visible: _peeking),
+                      if (_spot case final spot?)
+                        Peek(
+                          key: ObjectKey(spot),
+                          spot: spot,
+                          visible: _peeking,
+                        ),
                     ],
                   ),
                 ),
@@ -124,33 +136,4 @@ class _GameScreenState extends State<GameScreen> {
       ),
     );
   }
-}
-
-/// A cockatiel that peeks from the corner when nothing happens for a while.
-class _Peek extends StatelessWidget {
-  const _Peek({required this.visible});
-
-  final bool visible;
-
-  @override
-  Widget build(BuildContext context) => Positioned(
-    right: 24,
-    bottom: 0,
-    height: 190,
-    child: IgnorePointer(
-      child: ExcludeSemantics(
-        child: ClipRect(
-          child: AnimatedSlide(
-            offset: visible ? const Offset(0, .12) : const Offset(0, 1.1),
-            duration: const Duration(milliseconds: 420),
-            curve: Curves.easeOutBack,
-            child: Transform.rotate(
-              angle: -.16,
-              child: Image.asset('assets/mascot/peek.png'),
-            ),
-          ),
-        ),
-      ),
-    ),
-  );
 }
