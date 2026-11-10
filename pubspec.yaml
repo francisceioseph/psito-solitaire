@@ -1,7 +1,7 @@
 name: psito_solitaire
 description: "Classic solitaire with cockatiels. No ads, no telemetry, no account."
 publish_to: 'none'
-version: 1.2.0
+version: 1.3.0
 
 environment:
   sdk: ^3.13.3
