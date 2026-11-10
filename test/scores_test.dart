@@ -22,11 +22,6 @@ void main() {
     expect(scores.last.name, '9');
   });
 
-  test('the time is shown as minutes and seconds', () {
-    expect(formatTime(5), '0:05');
-    expect(formatTime(125), '2:05');
-  });
-
   test('scores survive saving and a damaged file is ignored', () async {
     SharedPreferences.setMockInitialValues({});
     const store = ScoreStore();

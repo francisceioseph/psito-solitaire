@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/widgets.dart';
 
-import '../game/game_state.dart';
+import '../../game/game_state.dart';
 
 /// Where everything goes for a given window size.
 class BoardLayout {

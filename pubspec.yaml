@@ -12,6 +12,10 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   intl: any
+  psito_games_ui:
+    git:
+      url: https://github.com/francisceioseph/psito-games-ui
+      ref: v1.0.0
   shared_preferences: ^2.5.6
 
 dev_dependencies:
@@ -24,7 +28,6 @@ flutter:
   generate: true
   assets:
     - assets/cards/
-    - assets/mascot/
     - assets/slots/
   fonts:
     - family: CardSerif

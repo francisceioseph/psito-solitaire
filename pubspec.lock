@@ -237,6 +237,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.8"
+  psito_games_ui:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: "v1.0.0"
+      resolved-ref: "585d3a325eeac791f531d7974c06b93073bb9477"
+      url: "https://github.com/francisceioseph/psito-games-ui"
+    source: git
+    version: "1.0.0"
   shared_preferences:
     dependency: "direct main"
     description:

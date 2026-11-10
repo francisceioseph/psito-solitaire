@@ -2,12 +2,15 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-import '../../l10n/app_localizations.dart';
-import '../game/game_controller.dart';
-import '../game/game_state.dart';
-import '../game/scores.dart';
+import '../../../l10n/app_localizations.dart';
+import '../../game/game_controller.dart';
+import '../../game/game_state.dart';
+import '../../game/scores.dart';
+import '../atoms/card_face.dart';
+import '../atoms/slot_view.dart';
+import '../labels.dart';
+import '../molecules/card_motion.dart';
 import 'board_layout.dart';
-import 'card_face.dart';
 import 'victory_panel.dart';
 
 class _Placed {
@@ -198,22 +201,8 @@ class _BoardState extends State<Board> with SingleTickerProviderStateMixin {
     if (placed.pile.kind == PileKind.stock) return l10n.drawCard;
     if (!placed.faceUp) return l10n.faceDownCard;
     final card = placed.card;
-    final rank = switch (card.rank) {
-      1 => l10n.rankAce,
-      11 => l10n.rankJack,
-      12 => l10n.rankQueen,
-      13 => l10n.rankKing,
-      _ => '${card.rank}',
-    };
-    return l10n.cardName(rank, _suitName(l10n, card.suit));
+    return cardName(l10n, card);
   }
-
-  String _suitName(AppLocalizations l10n, Suit suit) => switch (suit) {
-    Suit.clubs => l10n.suitClubs,
-    Suit.spades => l10n.suitSpades,
-    Suit.hearts => l10n.suitHearts,
-    Suit.diamonds => l10n.suitDiamonds,
-  };
 
   Widget _slot(BoardLayout layout, Pile pile, String label, Widget child) {
     final at = layout.slot(pile);
@@ -264,11 +253,11 @@ class _BoardState extends State<Board> with SingleTickerProviderStateMixin {
           ? Duration.zero
           : const Duration(milliseconds: 240),
       curve: Curves.easeOutBack,
-      child: _WinBounce(
+      child: WinBounce(
         animation: _win,
         card: placed.card,
         floor: layout.size.height - layout.cardHeight - placed.offset.dy,
-        child: _Shake(
+        child: Shake(
           tick: game.rejectTick,
           active: game.rejected.contains(placed.card.id),
           child: Semantics(
@@ -329,7 +318,7 @@ class _BoardState extends State<Board> with SingleTickerProviderStateMixin {
                   _slot(
                     layout,
                     Pile.foundation(suit.index),
-                    l10n.nestOf(_suitName(l10n, suit)),
+                    l10n.nestOf(suitName(l10n, suit)),
                     SlotView.nest(suit),
                   ),
                 for (var c = 0; c < 7; c++)
@@ -364,101 +353,4 @@ class _BoardState extends State<Board> with SingleTickerProviderStateMixin {
       child: VictoryPanel(game: game, store: widget.scores),
     ),
   );
-}
-
-/// Shakes "no" when [tick] changes while [active].
-class _Shake extends StatefulWidget {
-  const _Shake({required this.tick, required this.active, required this.child});
-
-  final int tick;
-  final bool active;
-  final Widget child;
-
-  @override
-  State<_Shake> createState() => _ShakeState();
-}
-
-class _ShakeState extends State<_Shake> with SingleTickerProviderStateMixin {
-  late final AnimationController _controller = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 320),
-  );
-
-  @override
-  void didUpdateWidget(_Shake old) {
-    super.didUpdateWidget(old);
-    if (widget.active && widget.tick != old.tick) _controller.forward(from: 0);
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) => AnimatedBuilder(
-    animation: _controller,
-    child: widget.child,
-    builder: (context, child) {
-      final t = _controller.value;
-      final dx = sin(t * pi * 5) * 7 * (1 - t);
-      return Transform.translate(offset: Offset(dx, 0), child: child);
-    },
-  );
-}
-
-/// The victory: the cards leave the nests one by one, bouncing off the floor.
-class _WinBounce extends StatelessWidget {
-  const _WinBounce({
-    required this.animation,
-    required this.card,
-    required this.floor,
-    required this.child,
-  });
-
-  static const _gravity = 2400.0;
-  static const _bounciness = .74;
-
-  final Animation<double> animation;
-  final PlayingCard card;
-  final double floor;
-  final Widget child;
-
-  double _height(double time) {
-    final fall = sqrt(2 * floor / _gravity);
-    if (time < fall) return .5 * _gravity * time * time;
-    var left = time - fall;
-    var speed = _gravity * fall * _bounciness;
-    while (speed > 60) {
-      final flight = 2 * speed / _gravity;
-      if (left < flight) {
-        return floor - (speed * left - .5 * _gravity * left * left);
-      }
-      left -= flight;
-      speed *= _bounciness;
-    }
-    return floor;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (MediaQuery.disableAnimationsOf(context)) return child;
-    final order = (13 - card.rank) * 4 + card.suit.index;
-    final direction = card.suit.index.isEven ? -1.0 : 1.0;
-    final speed = 150.0 + order % 5 * 45;
-    return AnimatedBuilder(
-      animation: animation,
-      child: child,
-      builder: (context, child) {
-        final total = animation.value * 9;
-        final time = total - order * .1;
-        if (animation.value == 0 || time <= 0) return child!;
-        return Transform.translate(
-          offset: Offset(direction * speed * time, _height(time)),
-          child: child,
-        );
-      },
-    );
-  }
 }

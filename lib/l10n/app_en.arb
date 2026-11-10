@@ -1,11 +1,7 @@
 {
   "@@locale": "en",
   "appTitle": "Psito Solitaire",
-  "newGame": "New game",
-  "restart": "Restart this game",
-  "undo": "Undo",
   "youWon": "You won!",
-  "playAgain": "Play again",
   "emptyColumn": "Empty column, kings only",
   "nestOf": "Nest of {suit}",
   "@nestOf": {
@@ -45,20 +41,6 @@
       }
     }
   },
-  "yourName": "Your name",
-  "save": "Save",
-  "skip": "Skip",
-  "bestGames": "Best games",
-  "noScores": "No games won yet.",
-  "close": "Close",
-  "statGame": "Game",
-  "statTime": "Time",
-  "moreOptions": "More options",
-  "chooseGame": "Choose a game number",
-  "howToPlay": "How to play",
-  "about": "About",
-  "cancel": "Cancel",
-  "play": "Play",
   "howToPlayBody": "Move all the cards to the four nests, from Ace to King, by suit.\n\nIn the columns, a card goes on one rank higher, of the other colour, and sequences move together. Only a King can go to an empty column.\n\nClick the deck to draw a card. When it runs out, click again to turn the waste over.\n\nPoints: 5 from the waste to a column, 10 to a nest, 5 for each card turned face up, minus 15 for taking a card from a nest and minus 100 for turning the waste over.\n\nCtrl+Z undoes, Ctrl+R restarts this game and Ctrl+N starts a new one.",
   "aboutBody": "Classic solitaire with cockatiels. No ads, no telemetry and no account.",
   "aboutLegal": "Code under the Apache 2.0 license. Card art under CC0.",

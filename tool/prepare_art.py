@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Paints the 52 cards and the mascot into assets/.
+"""Paints the 52 cards into assets/. The cockatiel that peeks is in psito_games_ui.
 
 Usage: prepare_art.py <source dir>
 
@@ -337,10 +337,6 @@ def cutout(path):
     return rgb.crop(alpha.point(lambda v: 255 if v > 16 else 0).getbbox())
 
 
-def fit_height(image, height):
-    return image.resize((int(image.width * height / image.height), height), Image.LANCZOS)
-
-
 def fit_width(image, width):
     return image.resize((width, int(image.height * width / image.width)), Image.LANCZOS)
 
@@ -365,16 +361,12 @@ def save(card, name):
 def main(source):
     random.seed(7)
     (OUT / "cards").mkdir(parents=True, exist_ok=True)
-    (OUT / "mascot").mkdir(parents=True, exist_ok=True)
     for pt, suit in SUITS.items():
         save(ace(source / "ases" / f"as_{pt}.jpeg", suit), f"ace_{suit}")
         for rank in range(2, 11):
             save(number(rank, suit), f"{rank}_{suit}")
         for pt_rank, (name, label) in COURT.items():
             save(court(source / "figuras" / f"{pt_rank}_{pt}.jpeg", label, suit), f"{name}_{suit}")
-    fit_height(cutout(source / "ases" / "as_paus.jpeg"), 420).save(
-        OUT / "mascot" / "peek.png", optimize=True
-    )
     slots(source)
     save(back(source), "back")
 

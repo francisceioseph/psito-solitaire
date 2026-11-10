@@ -49,3 +49,4 @@ app.*.map.json
 
 # Inno Setup
 windows/installer/Output/
+pubspec_overrides.yaml

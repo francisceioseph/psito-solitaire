@@ -2,7 +2,8 @@
 
 As imagens desta pasta foram geradas com o Gemini, do Google, a partir de
 descrições escritas para este projeto, e depois ajustadas pelo
-`tools/prepare_art.py`.
+`tool/prepare_art.py`. A calopsita que espia vem do pacote `psito_games_ui`,
+também sob CC0.
 
 Na medida em que a lei permite, elas são dedicadas ao domínio público pela
 [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/deed.pt-br). O código

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:psito_games_ui/psito_games_ui.dart';
 import 'package:psito_solitaire/l10n/app_localizations.dart';
 import 'package:psito_solitaire/src/game/game_controller.dart';
 import 'package:psito_solitaire/src/game/game_state.dart';
 import 'package:psito_solitaire/src/game/scores.dart';
-import 'package:psito_solitaire/src/ui/board.dart';
-import 'package:psito_solitaire/src/ui/card_face.dart';
-import 'package:psito_solitaire/src/ui/game_screen.dart';
+import 'package:psito_solitaire/src/ui/organisms/board.dart';
+import 'package:psito_solitaire/src/ui/atoms/card_face.dart';
+import 'package:psito_solitaire/src/ui/pages/game_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> pumpGame(WidgetTester tester, Size size) async {
@@ -16,7 +17,10 @@ Future<void> pumpGame(WidgetTester tester, Size size) async {
   await tester.pumpWidget(
     const MaterialApp(
       locale: Locale('pt'),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      localizationsDelegates: [
+        ...AppLocalizations.localizationsDelegates,
+        GamesUiLocalizations.delegate,
+      ],
       supportedLocales: AppLocalizations.supportedLocales,
       home: GameScreen(number: 3),
     ),
@@ -58,7 +62,10 @@ Future<GameController> pumpBoard(WidgetTester tester) async {
   await tester.pumpWidget(
     MaterialApp(
       locale: const Locale('pt'),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      localizationsDelegates: const [
+        ...AppLocalizations.localizationsDelegates,
+        GamesUiLocalizations.delegate,
+      ],
       supportedLocales: AppLocalizations.supportedLocales,
       home: Scaffold(body: Board(game: game)),
     ),
