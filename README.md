@@ -18,7 +18,7 @@ Flutter. No ads, no telemetry and no account: just a little game and some happin
 - Cards that flip, hop, shake their heads at a wrong move and bounce when you win
 - A curious cockatiel that peeks at the table when you stop to think
 - Keyboard shortcuts: `Ctrl+Z` undoes, `Ctrl+R` restarts and `Ctrl+N` starts a new game
-- English and Portuguese
+- English, Portuguese, Spanish, French, German, Russian and Chinese
 
 ## Install
 
