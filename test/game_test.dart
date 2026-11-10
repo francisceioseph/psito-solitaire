@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:psito_games_ui/psito_games_ui.dart';
 import 'package:psito_solitaire/src/game/game_controller.dart';
 import 'package:psito_solitaire/src/game/game_state.dart';
 
@@ -206,6 +207,27 @@ void main() {
       expect(game.state, same(before));
       expect(game.moves, 0);
       expect(game.canUndo, isFalse);
+    });
+
+    test('drawing, landing and uncovering a card have their sounds', () {
+      final sounds = RecordedSounds();
+      final game = GameController(
+        number: 5,
+        collectDelay: Duration.zero,
+        sounds: sounds,
+      );
+      game.state = table(
+        columns: [
+          [const PlayingCard(_c, 2), const PlayingCard(_h, 1)],
+        ],
+        hidden: [1],
+        stock: [const PlayingCard(_s, 9)],
+      );
+      game.draw();
+      expect(sounds.played, [GameSound.flip]);
+      sounds.clear();
+      game.moveCards(a, 1, Pile.foundation(_h.index));
+      expect(sounds.played, [GameSound.place, GameSound.flip]);
     });
 
     test('a click on a face-down card does nothing', () {

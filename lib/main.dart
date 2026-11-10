@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'package:psito_games_ui/psito_games_ui.dart';
@@ -6,7 +8,11 @@ import 'l10n/app_localizations.dart';
 import 'src/ui/atoms/colors.dart';
 import 'src/ui/pages/game_screen.dart';
 
-void main() => runApp(const PsitoSolitaireApp());
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  unawaited(GameSounds.shared.start());
+  runApp(const PsitoSolitaireApp());
+}
 
 class PsitoSolitaireApp extends StatelessWidget {
   const PsitoSolitaireApp({super.key});

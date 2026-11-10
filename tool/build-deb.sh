@@ -28,7 +28,7 @@ Maintainer: Francisco Souza <francisceioseph@users.noreply.github.com>
 Homepage: https://francisceioseph.github.io/psito-solitaire/
 Installed-Size: $(du -sk "$ROOT/usr" | cut -f1)
 Depends: libgtk-3-0 | libgtk-3-0t64, libglib2.0-0t64 (>= 2.80) | libglib2.0-0 (>= 2.80), libegl1, libgles2
-Recommends: libgl1-mesa-dri
+Recommends: libgl1-mesa-dri, libasound2t64 | libasound2
 Description: Classic solitaire card game with cockatiels
  A Klondike solitaire with illustrated cockatiel cards.
  No ads, no telemetry and no account.

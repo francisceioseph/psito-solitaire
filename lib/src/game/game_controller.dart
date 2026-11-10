@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
+import 'package:psito_games_ui/psito_games_ui.dart';
 
 import 'game_state.dart';
 
@@ -27,8 +28,10 @@ class GameController extends ChangeNotifier {
   GameController({
     int? number,
     this.collectDelay = const Duration(milliseconds: 130),
+    SoundBoard? sounds,
   }) : number = number ?? _randomNumber(),
-       state = GameState.deal(number ?? 1) {
+       state = GameState.deal(number ?? 1),
+       sounds = sounds ?? GameSounds.shared {
     state = GameState.deal(this.number);
   }
 
@@ -38,6 +41,13 @@ class GameController extends ChangeNotifier {
 
   /// The pause between cards when the game finishes itself.
   final Duration collectDelay;
+
+  /// Where the sounds of the table go.
+  final SoundBoard sounds;
+
+  /// When a moved card reaches its place, a little before the end of its
+  /// flight.
+  static const landing = Duration(milliseconds: 240);
 
   int number;
   GameState state;
@@ -61,8 +71,20 @@ class GameController extends ChangeNotifier {
   /// The time played, from the first move until the win.
   int get seconds => _clock.elapsed.inSeconds;
 
-  void _stopClockIfWon() {
-    if (state.isWon) _clock.stop();
+  /// Lands the cards of a move from [before], turns over the card they
+  /// leave uncovered, and ends the game when it is won.
+  void _landed(GameState before) {
+    sounds.play(GameSound.place, delay: landing);
+    final turned = Iterable.generate(
+      before.hidden.length,
+    ).any((i) => state.hidden[i] < before.hidden[i]);
+    if (turned) {
+      sounds.play(GameSound.flip, delay: landing + const Duration(milliseconds: 120));
+    }
+    if (state.isWon && !before.isWon) {
+      _clock.stop();
+      sounds.play(GameSound.victory, delay: landing * 2);
+    }
   }
 
   void newGame([int? number]) {
@@ -84,6 +106,7 @@ class GameController extends ChangeNotifier {
     lastMoved = const {};
     rejected = const {};
     _history.clear();
+    sounds.play(GameSound.shuffle);
     notifyListeners();
   }
 
@@ -96,6 +119,7 @@ class GameController extends ChangeNotifier {
     score = snapshot.score;
     selected = null;
     lastMoved = const {};
+    sounds.play(GameSound.place);
     notifyListeners();
   }
 
@@ -110,6 +134,7 @@ class GameController extends ChangeNotifier {
   void _addScore(int points) => score = max(0, score + points);
 
   void _reject(Iterable<PlayingCard> cards) {
+    sounds.play(GameSound.refuse);
     rejected = {for (final card in cards) card.id};
     rejectTick++;
     selected = null;
@@ -132,6 +157,7 @@ class GameController extends ChangeNotifier {
     state = next;
     moves++;
     if (recycling) _addScore(-_recyclePenalty);
+    sounds.play(recycling ? GameSound.deal : GameSound.flip);
     selected = null;
     lastMoved = drawn;
     rejected = const {};
@@ -149,13 +175,14 @@ class GameController extends ChangeNotifier {
     final moved = {for (final card in state.cardsFrom(from, count)) card.id};
     _remember();
     _addScore(state.pointsFor(from, to, next));
+    final before = state;
     state = next;
     moves++;
     selected = null;
     lastMoved = moved;
     rejected = const {};
     _clock.start();
-    _stopClockIfWon();
+    _landed(before);
     notifyListeners();
     _finishIfPossible();
     return true;
@@ -236,9 +263,10 @@ class GameController extends ChangeNotifier {
     final target = Pile.foundation(card.suit.index);
     final next = state.move(from, 1, target)!;
     _addScore(state.pointsFor(from, target, next));
+    final before = state;
     state = next;
     lastMoved = {card.id};
-    _stopClockIfWon();
+    _landed(before);
     notifyListeners();
     return true;
   }

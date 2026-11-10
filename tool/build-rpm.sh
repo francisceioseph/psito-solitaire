@@ -33,6 +33,8 @@ Requires: gtk3
 Requires: glib2 >= 2.80
 Requires: mesa-libEGL
 Requires: mesa-libGLES
+# The sounds open ALSA when they start. Without it the game is silent.
+Recommends: alsa-lib
 Recommends: mesa-dri-drivers
 
 %description
